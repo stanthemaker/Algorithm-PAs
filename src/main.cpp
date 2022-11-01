@@ -18,7 +18,6 @@ void help_message()
 {
 	cout << "usage: MPS - <input_file> <output_file>" << endl;
 }
-
 int main(int argc, char* argv[])
 {
 	if(argc != 3)
@@ -37,7 +36,6 @@ int main(int argc, char* argv[])
 	int line_number = 0;
 	fin >> num_vertices;
 	int* line_arr = new int[num_vertices];
-	bool* reverseTable = new bool[num_vertices];
 	int num_line = num_vertices / 2;
 	//////////// initiate variables /////////////
 	for(int i = 0; i < num_line; i++)
@@ -48,16 +46,17 @@ int main(int argc, char* argv[])
 		fin >> v2;
 		line_arr[v1] = v2;
 		line_arr[v2] = v1;
-		reverseTable[v1] = false;
-		reverseTable[v2] = true;
 	}
 
 	int** maxTable = new int*[num_vertices];
+	vector<int>** recordTable = new vector<int>*[num_vertices];
 	for(int i = 0; i < num_vertices; ++i)
 	{
 		maxTable[i] = new int[num_vertices];
 		memset(maxTable[i], -1, sizeof(int) * num_vertices);
 		maxTable[i][i] = 0;
+
+		recordTable[i] = new vector<int>[num_vertices];
 	}
 
 	////////////// fill the max table //////////////
@@ -65,9 +64,10 @@ int main(int argc, char* argv[])
 	{
 		for(int i = 0; i < j; i++)
 		{
-			fillTable(i, j, maxTable, line_arr);
+			fillTable(i, j, maxTable, line_arr, recordTable);
 		}
 	}
+
 	tmusg.periodStart();
 	tmusg.getPeriodUsage(stat);
 	cout << "The total CPU time: " << (stat.uTime + stat.sTime) / 1000.0 << "ms" << endl;
@@ -75,8 +75,12 @@ int main(int argc, char* argv[])
 
 	//////////// write the output file ///////////
 	fout << maxTable[0][num_vertices - 1] << endl;
-	// fout << "# " << data.size() << " data points" << endl;
-	// fout << "# index number" << endl;
+	vector<int> result = recordTable[0][num_vertices - 1];
+	cout << result.size() << endl;
+	for(int i = 0; i < result.size(); i++)
+	{
+		fout << result[i] << " " << line_arr[result[i]] << endl;
+	}
 	// for (int i = 0; i < data.size(); i++)
 	//     fout << i << " " << data[i] << endl;
 	fin.close();
