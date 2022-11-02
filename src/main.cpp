@@ -7,9 +7,11 @@
 
 #include "../lib/tm_usage.h"
 #include "fillTable.h"
+#include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include <vector>
 
 using namespace std;
@@ -50,16 +52,21 @@ int main(int argc, char* argv[])
 
 	int** maxTable = new int*[num_vertices];
 	vector<int>** recordTable = new vector<int>*[num_vertices];
+	cout << "initialize table" << endl;
+
 	for(int i = 0; i < num_vertices; ++i)
 	{
+		if(i % 1000 == 0)
+			cout << "i = " << i << "\n";
 		maxTable[i] = new int[num_vertices];
-		memset(maxTable[i], -1, sizeof(int) * num_vertices);
+		memset(maxTable[i], -1, sizeof(int) * num_vertices); // initialize to 0 is better
 		maxTable[i][i] = 0;
 
 		recordTable[i] = new vector<int>[num_vertices];
 	}
 
 	////////////// fill the max table //////////////
+	cout << "filling table" << endl;
 	for(int j = 1; j < num_vertices; j++)
 	{
 		for(int i = 0; i < j; i++)
@@ -75,14 +82,13 @@ int main(int argc, char* argv[])
 
 	//////////// write the output file ///////////
 	fout << maxTable[0][num_vertices - 1] << endl;
-	vector<int> result = recordTable[0][num_vertices - 1];
-	cout << result.size() << endl;
-	for(int i = 0; i < result.size(); i++)
-	{
-		fout << result[i] << " " << line_arr[result[i]] << endl;
-	}
-	// for (int i = 0; i < data.size(); i++)
-	//     fout << i << " " << data[i] << endl;
+	// vector<int> result = recordTable[0][num_vertices - 1];
+	// std::sort(result.begin(), result.end());
+	// cout << result.size() << endl;
+	// for(int i = 0; i < result.size(); i++)
+	// {
+	// 	fout << result[i] << " " << line_arr[result[i]] << endl;
+	// }
 	fin.close();
 	fout.close();
 	return 0;
