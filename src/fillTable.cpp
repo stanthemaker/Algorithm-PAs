@@ -2,63 +2,59 @@
 #include <iostream>
 #include <limits>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
-// #include <vector>
 
-// using namespace std;
-void print_vector(const vector<int> v)
+MPS_tool::MPS_tool() { }
+
+int MPS_tool::fillTable(const int& start, const int& end)
 {
-	for(int i = 0; i < v.size(); i++)
-	{
-		cout << v[i] << " ";
-	}
-	cout << endl;
-};
-void fillTable(const int start,
-			   const int end,
-			   vector<vector<int>>& maxTable,
-			   int* line_arr,
-			   vector<int>** recordTable)
-{
+
+	if(maxTable[start][end] != -1)
+		return maxTable[start][end];
+
 	if(line_arr[start] == end) // start - end is a chord
 	{
-		maxTable[start][end] = 1 + maxTable[start + 1][end - 1];
-		// vector<int> v = recordTable[start + 1][end - 1];
-		// v.push_back(start);
-		// recordTable[start][end] = v;
+		recordTable[start][end] = 1; //case 1
+		return maxTable[start][end] = (1 + fillTable(start + 1, end - 1));
 	}
 	else
 	{
 		const int k = line_arr[end];
+		const int kj_line_out = fillTable(start, end - 1);
+
 		if(k > start && k < end) //exist k s.t. k-end is a chord and k is between start and end
 		{
-			int kj_line_in = 1 + maxTable[start][k - 1] + maxTable[k + 1][end - 1];
-			int kj_line_out = maxTable[start][end - 1];
+			const int kj_line_in = 1 + fillTable(start, k - 1) + fillTable(k + 1, end - 1);
 			if(kj_line_in > kj_line_out)
 			{
-				maxTable[start][end] = kj_line_in;
-
-				//concatenate the two vectors
-				// vector<int> v = recordTable[start][k - 1];
-				// v.insert(v.end(),
-				// 		 recordTable[k + 1][end - 1].begin(),
-				// 		 recordTable[k + 1][end - 1].end());
-				// v.push_back(k);
-				// recor dTable[start][end] = v;
-			}
-			else
-			{
-				maxTable[start][end] = kj_line_out;
-				// recordTable[start][end] = recordTable[start][end - 1];
+				recordTable[start][end] = 2; //case 2
+				return maxTable[start][end] = kj_line_in;
 			}
 		}
-		else //exist k s.t. k-end is a chord and k is outside start and end
-		{
-			maxTable[start][end] = maxTable[start][end - 1];
-			// recordTable[start][end] = recordTable[start][end - 1];
-		}
+		//exist k s.t. k-end is a chord and k is outside start and end
+		recordTable[start][end] = 3; //case 3
+		return maxTable[start][end] = kj_line_out;
 	}
-	// cout << "size of recordTable[" << start << "][" << end
-	//  << "] = " << recordTable[start][end].size() << endl;
-	// cout << "maxTable value : " << maxTable[start][end] << endl;
 };
+void MPS_tool::traceAnswer(const int start, const int end)
+{
+	if(start == end)
+		return;
+	if(recordTable[start][end] == 1)
+	{
+		ansline.push_back(start);
+		traceAnswer(start + 1, end - 1);
+	}
+	else if(recordTable[start][end] == 2)
+	{
+		const int k = line_arr[end];
+		ansline.push_back(k);
+		traceAnswer(start, k - 1);
+		traceAnswer(k + 1, end - 1);
+	}
+	else
+	{
+		traceAnswer(start, end - 1);
+	}
+}

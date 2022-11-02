@@ -7,14 +7,15 @@ ARFLAGS = rcv
 # -g option is for debugging version
 # -O2 option is for optimized version
 DBGFLAGS = -g -D_DEBUG_ON_
-OPTFLAGS = -O2
+OPTFLAGS = -O3
 
 all	: bin/mps
 	@echo -n ""
 
 # optimized version
 bin/mps			: fillTable_opt.o main_opt.o lib
-			$(CC) $(OPTFLAGS) fillTable_opt.o main_opt.o -ltm_usage -Llib -o bin/mps
+			# $(CC) $(OPTFLAGS) fillTable_opt.o main_opt.o -ltm_usage -Llib -o bin/mps
+			$(CC) $(OPTFLAGS) fillTable_opt.o main_opt.o -o bin/mps
 main_opt.o 	   	: src/main.cpp lib/tm_usage.h
 			$(CC) $(CFLAGS) $< -Ilib -o $@
 fillTable_opt.o	: src/fillTable.cpp src/fillTable.h
@@ -24,7 +25,7 @@ fillTable_opt.o	: src/fillTable.cpp src/fillTable.h
 dbg : bin/mps_dbg
 	@echo -n ""
 
-bin/mps_dbg	: fillTable_dbg.o main_dbg.o lib
+bin/mps_dbg		: fillTable_dbg.o main_dbg.o lib
 			$(CC) $(DBGFLAGS) fillTable_dbg.o main_dbg.o -ltm_usage -Llib -o bin/mps_dbg
 main_dbg.o 	   	: src/main.cpp lib/tm_usage.h
 			$(CC) $(CFLAGS) $< -Ilib -o $@
