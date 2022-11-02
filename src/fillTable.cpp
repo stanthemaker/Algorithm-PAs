@@ -7,35 +7,34 @@
 
 MPS_tool::MPS_tool() { }
 
-int MPS_tool::fillTable(const int& start, const int& end)
+int MPS_tool::solveMPS(const int& start, const int& end)
 {
-
-	if(maxTable[start][end] != -1)
+	if(isUpdated[start][end])
 		return maxTable[start][end];
 
-	if(line_arr[start] == end) // start - end is a chord
+	isUpdated[start][end] = true;
+	if(start >= end)
 	{
-		recordTable[start][end] = 1; //case 1
-		return maxTable[start][end] = (1 + fillTable(start + 1, end - 1));
+		return maxTable[start][end] = 0;
 	}
-	else
+	if(line_arr[start] == end)
 	{
-		const int k = line_arr[end];
-		const int kj_line_out = fillTable(start, end - 1);
-
-		if(k > start && k < end) //exist k s.t. k-end is a chord and k is between start and end
+		recordTable[start][end] = 1; //case 1 start-end is a chord
+		return maxTable[start][end] = 1 + solveMPS(start + 1, end - 1);
+	}
+	const int k = line_arr[end];
+	const int v3 = solveMPS(start, end - 1);
+	if(k > start && k < end)
+	{
+		const int v2 = 1 + solveMPS(start, k - 1) + solveMPS(k + 1, end - 1);
+		if(v2 > v3)
 		{
-			const int kj_line_in = 1 + fillTable(start, k - 1) + fillTable(k + 1, end - 1);
-			if(kj_line_in > kj_line_out)
-			{
-				recordTable[start][end] = 2; //case 2
-				return maxTable[start][end] = kj_line_in;
-			}
+			recordTable[start][end] = 2; //case 2
+			return maxTable[start][end] = v2;
 		}
-		//exist k s.t. k-end is a chord and k is outside start and end
-		recordTable[start][end] = 3; //case 3
-		return maxTable[start][end] = kj_line_out;
 	}
+	recordTable[start][end] = 3; //case 3 k-end is a chord, k is outside start-end
+	return maxTable[start][end] = v3;
 };
 void MPS_tool::traceAnswer(const int start, const int end)
 {

@@ -22,15 +22,11 @@ int main(int argc, char* argv[])
 		help_message();
 		return 0;
 	}
-	// CommonNs::TmUsage tmusg;
-	// CommonNs::TmStat stat;
-	///////// set timer //////////
 	time_t t1, t2;
 	t1 = time(NULL);
 
 	//////////// read the input file /////////////
 	cout << "reading input" << endl;
-
 	FILE* input_file = fopen(argv[1], "r");
 	fstream fout;
 	fout.open(argv[2], ios::out);
@@ -52,20 +48,10 @@ int main(int argc, char* argv[])
 	fclose(input_file);
 
 	cout << "initialize table" << endl;
-	MPS.maxTable = new int*[num_vertices];
-	MPS.recordTable = new int*[num_vertices];
-	for(int i = 0; i < num_vertices; i++)
-	{
-		MPS.maxTable[i] = new int[num_vertices];
-		for(int j = 0; j < num_vertices; ++j)
-			MPS.maxTable[i][j] = -1;
-		MPS.maxTable[i][i] = 0;
-		MPS.recordTable[i] = new int[num_vertices];
-	}
 	MPS.ansline.reserve(num_vertices);
 	////////////// fill the max table //////////////
 	cout << "filling table" << endl;
-	const int ans = MPS.fillTable(0, num_vertices - 1);
+	const int ans = MPS.solveMPS(0, num_vertices - 1);
 	MPS.traceAnswer(0, num_vertices - 1);
 
 	t2 = time(NULL);
