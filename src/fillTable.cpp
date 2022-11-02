@@ -14,8 +14,11 @@ void print_vector(const vector<int> v)
 	}
 	cout << endl;
 };
-void fillTable(
-	const int start, const int end, int** maxTable, int* line_arr, vector<int>** recordTable)
+void fillTable(const int start,
+			   const int end,
+			   vector<vector<int>>& maxTable,
+			   int* line_arr,
+			   vector<int>** recordTable)
 {
 	if(line_arr[start] == end) // start - end is a chord
 	{
@@ -41,7 +44,7 @@ void fillTable(
 				// 		 recordTable[k + 1][end - 1].begin(),
 				// 		 recordTable[k + 1][end - 1].end());
 				// v.push_back(k);
-				// recordTable[start][end] = v;
+				// recor dTable[start][end] = v;
 			}
 			else
 			{

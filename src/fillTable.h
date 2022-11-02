@@ -3,6 +3,9 @@
 #include <vector>
 using namespace std;
 
-void fillTable(
-	const int start, const int end, int** maxTable, int* line_arr, vector<int>** recordTable);
+void fillTable(const int start,
+			   const int end,
+			   vector<vector<int>>& maxTable,
+			   int* line_arr,
+			   vector<int>** recordTable);
 #endif
