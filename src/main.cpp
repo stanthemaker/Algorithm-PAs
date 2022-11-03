@@ -10,6 +10,7 @@
 #include <time.h>
 #include <vector>
 using namespace std;
+#define Value_BITS 1048575u
 
 MPS_tool MPS;
 
@@ -28,50 +29,48 @@ int main(int argc, char* argv[])
 	t1 = time(NULL);
 
 	//////////// read the input file /////////////
-	cout << "reading input" << endl;
+	printf("Reading input file...\n");
 	FILE* input_file = fopen(argv[1], "r");
-	fstream fout;
-	fout.open(argv[2], ios::out);
+	MPS.fout.open(argv[2], ios::out);
 	int num_vertices;
 	fscanf(input_file, "%d", &num_vertices);
 	const int num_line = num_vertices >> 1;
 
 	for(int i = 0; i < MAX_VERTICES; i++)
 	{
-		MPS.isUpdated[i] = new bool[MAX_VERTICES];
-		MPS.maxTable[i] = new int[MAX_VERTICES];
-		MPS.recordTable[i] = new int[MAX_VERTICES];
+		MPS.solutionTable[i] = new uint[MAX_VERTICES];
 	}
 
 	// //////////// initiate variables /////////////
-	cout << "initialize table" << endl;
-	MPS.line_arr = new int[num_vertices];
+	printf("initiate variables\n");
+	MPS.line_arr = new uint[num_vertices];
 	for(int i = 0; i < num_line; i++)
 	{
-		int v1;
-		int v2;
+		uint v1;
+		uint v2;
 		fscanf(input_file, "%d %d", &v1, &v2);
 		MPS.line_arr[v1] = v2;
 		MPS.line_arr[v2] = v1;
+		// printf("%d, %d\n", v1, MPS.line_arr[v1]);
+		// printf("%d, %d\n", v2, MPS.line_arr[v2]);
 	}
 	fclose(input_file);
 
 	MPS.ansline.reserve(num_vertices);
 	////////////// fill the max table //////////////
-	cout << "filling table" << endl;
-	const int ans = MPS.solveMPS(0, num_vertices - 1);
+	printf("filling table\n");
+	const int ans = MPS.solveMPS(0, num_vertices - 1) & Value_BITS;
+
+	printf("Tracing anwser\n");
 	MPS.traceAnswer(0, num_vertices - 1);
 
 	t2 = time(NULL);
 	cout << "Total time: " << t2 - t1 << " secs\n";
 
 	//////////// write the output file ///////////
-	fout << ans << endl;
+	MPS.fout << ans << endl;
 	std::sort(MPS.ansline.begin(), MPS.ansline.end());
-	for(int i = 0; i < MPS.ansline.size(); i++)
-	{
-		fout << MPS.ansline[i] << " " << MPS.line_arr[MPS.ansline[i]] << endl;
-	}
-	fout.close();
+	MPS.fout.close();
+
 	return 0;
 }
