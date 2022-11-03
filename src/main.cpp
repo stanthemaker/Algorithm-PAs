@@ -11,6 +11,8 @@
 #include <vector>
 using namespace std;
 
+MPS_tool MPS;
+
 void help_message()
 {
 	cout << "usage: MPS - <input_file> <output_file>" << endl;
@@ -34,8 +36,15 @@ int main(int argc, char* argv[])
 	fscanf(input_file, "%d", &num_vertices);
 	const int num_line = num_vertices >> 1;
 
-	//////////// initiate variables /////////////
-	MPS_tool MPS;
+	for(int i = 0; i < MAX_VERTICES; i++)
+	{
+		MPS.isUpdated[i] = new bool[MAX_VERTICES];
+		MPS.maxTable[i] = new int[MAX_VERTICES];
+		MPS.recordTable[i] = new int[MAX_VERTICES];
+	}
+
+	// //////////// initiate variables /////////////
+	cout << "initialize table" << endl;
 	MPS.line_arr = new int[num_vertices];
 	for(int i = 0; i < num_line; i++)
 	{
@@ -47,7 +56,6 @@ int main(int argc, char* argv[])
 	}
 	fclose(input_file);
 
-	cout << "initialize table" << endl;
 	MPS.ansline.reserve(num_vertices);
 	////////////// fill the max table //////////////
 	cout << "filling table" << endl;

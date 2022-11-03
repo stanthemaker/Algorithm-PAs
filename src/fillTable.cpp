@@ -9,6 +9,7 @@ MPS_tool::MPS_tool() { }
 
 int MPS_tool::solveMPS(const int& start, const int& end)
 {
+	// printf("start: %d, end: %d\n", start, end);
 	if(isUpdated[start][end])
 		return maxTable[start][end];
 
