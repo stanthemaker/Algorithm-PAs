@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 	MPS.traceAnswer(0, num_vertices - 1);
 
 	t2 = time(NULL);
-	printf("total time cost: %ld\n", t2 - t1);
+	printf("total time cost: %ld secs\n", t2 - t1);
 	//////////// write the output file ///////////
 	MPS.fout.close();
 
