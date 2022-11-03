@@ -16,7 +16,6 @@ public:
 	fstream fout;
 	uint* solutionTable[MAX_VERTICES];
 	uint* line_arr;
-	vector<int> ansline;
 };
 
 // int fillTable(const int start, const int end, int** maxTable, int* line_arr);
